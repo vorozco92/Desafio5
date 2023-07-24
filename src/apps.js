@@ -17,6 +17,7 @@ const app = express();
 const PORT = 8080;
 
 
+//mongoose.set('strictQuery',false)
 const connection  = mongoose.connect("mongodb+srv://vorozco:7TUWS6ekWahMBYHU@ecommerce.kzv8tdc.mongodb.net/ecommerce?retryWrites=true&w=majority") 
 
 const server = app.listen(PORT, ()=>{console.log("Server arriba")})

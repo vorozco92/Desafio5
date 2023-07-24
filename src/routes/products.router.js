@@ -12,21 +12,21 @@ router.get('/',async(req,res)=>{
     console.log(body);
     sort =  sort.toLowerCase();
     let products = await productManager.getAll(limit, page, sort, body);
+    //console.log(products)
 
-
-    if (! products[0].totalItems)
-        res.send({status:'error', error:'No se obtuvieron resultados de productos'})
+    if (! products.docs.length)
+       res.send({status:'error', error:'No se obtuvieron resultados de productos'})
     else
-        res.send({status:'success',
-            payload:products[0].items,
-            totalPages:products[0].totalPages,
-            prevPage: products[0].prevPage,
-            nextPage: products[0].nextPage,
-            page: products[0].page,
-            hasNextPage: products[0].hasNextPage,
-            hasPrevPage: products[0].hasPrevPage,
-            prevLink: products[0].hasPrevPage ? (req.protocol+'://'+req.get('host')+ req.originalUrl).replace('page='+products[0].page, 'page='+products[0].prevPage): null,
-            nextLink: products[0].hasNextPage ? (req.protocol+'://'+req.get('host')+ req.originalUrl).replace('page='+products[0].page, 'page='+products[0].nextPage) : null
+        res.render('products',{status:'success',
+            payload:products.docs,
+            totalPages:products.totalPages,
+            prevPage: products.prevPage,
+            nextPage: products.nextPage,
+            page: products.page,
+            hasNextPage: products.hasNextPage,
+            hasPrevPage: products.hasPrevPage,
+            prevLink: products.hasPrevPage ? req.protocol+'://'+req.get('host')+ req.baseUrl + '?sort='+sort+'&limit='+limit+'&page='+products.prevPage : null ,
+            nextLink: products.hasNextPage ? req.protocol+'://'+req.get('host')+ req.baseUrl + '?sort='+sort+'&limit='+limit+'&page='+products.nextPage : null,
         })
 })
 
@@ -41,7 +41,7 @@ router.post('/',async(req,res)=>{
         category : category
     }
 
-    newProduct.id =  await productManager.getIdProduct();
+    //newProduct.id =  await productManager.getIdProduct();
     if (req.body.thumbnails)
         newProduct.thumbnails = req.body.thumbnails
 

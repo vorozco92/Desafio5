@@ -3,7 +3,7 @@ const socket = io();
 
 let user;
 let chatBox = document.getElementById("chatBox");
-Swal.fire({
+/*Swal.fire({
     'title': 'Ingresa por favor tu correo:',
     'input' : 'email',
     validationMessage:  "Se requiere un correo para continuar",
@@ -13,7 +13,7 @@ Swal.fire({
     user = result.value;
     socket.emit("newUser",{user});
 });
-
+*/
 chatBox.addEventListener("keyup",(evt)=>{
     if (evt.key === "Enter"){
         if (chatBox.value.trim().length > 0){
@@ -62,4 +62,26 @@ socket.on('log',data=>{
     })
     log.innerHTML=logs;
 })
- */
+ 
+
+const form =document.getElementsByClassName('addForm')
+
+form.addEventListener('submit', e =>{
+    e.preventDefault();
+
+    const data= new FormData(form);
+    const obj={}
+    data.forEach((value,key)=>obj[key]=value);
+
+    fetch('/api/sessions/login',{
+        method:'POST',
+        body:JSON.stringify(obj),
+        headers:{
+            'Content-Type':'application/json'
+        }
+    }).then(result=>{
+        if(result.status===200){
+            window.location.replace('/')
+        }
+    })
+})

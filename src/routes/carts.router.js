@@ -22,9 +22,9 @@ router.post('/',async(req,res)=>{
 
 router.get('/:id', async(req, res)=>{
     let cartId = req.params.id;
-    let cart = await cartManager.getCartById(cartId);
+    let cart = await cartManager.getCartByIdPopulate(cartId);
     if (cart)
-        res.send({status:'success',cart:cart})
+        res.render('carts',{status:'success',products:cart.products})
     else
         res.send({status:'error','error_description':`carrito con Id ${cartId} no fue encontrado.`})
 })
@@ -61,6 +61,17 @@ router.put('/:cid/products/:pid', async(req, res)=>{
     if (cart){
         let cartEdit = await cartManager.updateProductInCartById(cartId, productId, qty);
         res.send({status:'success', cart: cartEdit});
+    }
+    else
+        res.send({status:'error','error_description':`carrito con Id ${cartId} no fue encontrado.`})
+})
+
+router.delete('/:cid', async(req, res)=>{
+    let cartId = req.params.cid;
+    let cart = await cartManager.getCartById(cartId);
+    if (cart){
+        let cartR = await cartManager.deleteProductsInCart(cartId);
+        res.send({status:'success', cart: cartR});
     }
     else
         res.send({status:'error','error_description':`carrito con Id ${cartId} no fue encontrado.`})
